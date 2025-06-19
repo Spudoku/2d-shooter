@@ -1,8 +1,4 @@
-using System.Collections;
-using System.Collections.Generic;
-using System.IO;
-using Unity.VisualScripting;
-using UnityEditor.PackageManager;
+
 using UnityEngine;
 [RequireComponent(typeof(LineOfSight))]
 public class Explosion : MonoBehaviour
@@ -12,7 +8,7 @@ public class Explosion : MonoBehaviour
     [SerializeField] private bool requireLOS;                           // if true, objects must be 'seen' by the explosion to be damaged
     [SerializeField] private LayerMask lm;
     [SerializeField] private GameObject fxPF;                           // "Effects prefab"
-   
+
     //private Vector2 pos;
     [SerializeField] private AudioClip explodeClip;
     [SerializeField] private LineOfSight los;
@@ -24,7 +20,7 @@ public class Explosion : MonoBehaviour
 
     public void InitExplosion()
     {
-        
+
         //exDMG = 100f;
         //exRAD = 2f;
         //requireLOS = true;
@@ -45,27 +41,29 @@ public class Explosion : MonoBehaviour
         if (fxPF != null)
         {
             fx = Instantiate(fxPF);
-        } else
+        }
+        else
         {
-            Debug.LogError("Explosion: fxPF must not be null!",fxPF);
+            Debug.LogError("Explosion: fxPF must not be null!", fxPF);
             fx = new GameObject();
             fx.transform.position = pos;
         }
         fx.transform.position = pos;
-        fx.transform.localScale = new(exRAD,exRAD,1);
+        fx.transform.localScale = new(exRAD, exRAD, 1);
         AudioSource.PlayClipAtPoint(explodeClip, pos);
 
-        Collider2D[] gos = Physics2D.OverlapCircleAll(pos, exRAD,lm);
+        Collider2D[] gos = Physics2D.OverlapCircleAll(pos, exRAD, lm);
 
         foreach (Collider2D g in gos)
         {
-            if (!g.Equals(gameObject) && g.TryGetComponent<DamageableObject>(out var DO) )
+            if (!g.Equals(gameObject) && g.TryGetComponent<DamageableObject>(out var DO))
             {
                 if (requireLOS && los.CanSeeGO(g.gameObject, exRAD, lm))
                 {
                     DO.ChangeHP(-exDMG);
-                    
-                } else
+
+                }
+                else
                 {
                     DO.ChangeHP(-exDMG);
                 }

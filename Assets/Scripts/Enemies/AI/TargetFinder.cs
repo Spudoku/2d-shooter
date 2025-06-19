@@ -1,7 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
-using Unity.VisualScripting;
-using UnityEditor.Experimental.GraphView;
+
 using UnityEngine;
 
 [RequireComponent(typeof(LineOfSight))]
@@ -16,13 +15,13 @@ public class TargetFinder : MonoBehaviour
     private LineOfSight los;
 
     //[SerializeField] private Dictionary<GameObject,bool> possibleTargets = new Dictionary<GameObject,bool>();        // a list of targets (tagged as "Player" or "PlayerAlly"), and whether they can currently be seen or not.
-    [SerializeField] private HashSet<GameObject> possibleTargets = new();  
+    [SerializeField] private HashSet<GameObject> possibleTargets = new();
 
     // Start is called before the first frame update
     void Start()
     {
         //
-        los =  GetComponent<LineOfSight>();
+        los = GetComponent<LineOfSight>();
         los.lookRange = searchRange;
     }
 
@@ -45,11 +44,12 @@ public class TargetFinder : MonoBehaviour
                 //Debug.Log(gameObject + " update targets: " +  go  + " == null (removing " + go + ")");
                 possibleTargets.Remove(go);
             }
-            else if (Vector2.Distance(transform.position, go.transform.position) > searchRange) 
+            else if (Vector2.Distance(transform.position, go.transform.position) > searchRange)
             {
-               // Debug.Log(gameObject + " update targets: " + go + " is too far! (removing " + go + ")");
+                // Debug.Log(gameObject + " update targets: " + go + " is too far! (removing " + go + ")");
                 possibleTargets.Remove(go);
-            } else if (!los.CanSeeGO(go, searchRange))
+            }
+            else if (!los.CanSeeGO(go, searchRange))
             {
                 //Debug.Log(gameObject + " update targets: " + go + " is obscured! (removing " + go + ")");
                 possibleTargets.Remove(go);
@@ -57,11 +57,11 @@ public class TargetFinder : MonoBehaviour
         }
 
         // add new targets from all nearby colliders
-        Collider2D[] allNearby = Physics2D.OverlapCircleAll(transform.position,searchRange);
-        foreach(Collider2D collider in allNearby)
+        Collider2D[] allNearby = Physics2D.OverlapCircleAll(transform.position, searchRange);
+        foreach (Collider2D collider in allNearby)
         {
             GameObject go = collider.gameObject;
-            if (IsTaggedTarget(go) && los.CanSeeGO(go,searchRange))
+            if (IsTaggedTarget(go) && los.CanSeeGO(go, searchRange))
             {
                 possibleTargets.Add(go);
 
@@ -69,8 +69,8 @@ public class TargetFinder : MonoBehaviour
         }
 
 
-        
-        
+
+
     }
 
     // returns the nearest target that can currently be seen
@@ -81,10 +81,13 @@ public class TargetFinder : MonoBehaviour
         {
             //Debug.Log(gameObject + " target check: s.count == 0! (returning null)!");
             return null;
-        } else if ((target != null && !s.Contains(target))) {
+        }
+        else if ((target != null && !s.Contains(target)))
+        {
             //Debug.Log(gameObject + " target check: target is not null and s does not contain target! (returning null)!");
             return null;
-        } else
+        }
+        else
         {
             float curDistance = Mathf.Infinity;
             Vector2 curPos = transform.position;
